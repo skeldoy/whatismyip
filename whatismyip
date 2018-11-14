@@ -1,0 +1,31 @@
+#!/bin/sh
+
+CURL=`which curl`;
+WGET=`which wget`;
+FETCH=`which fetch`;
+NC=`which nc`;
+
+# look for something to use.. and use it if it's there..
+
+if [ ! -z $CURL ]; then 
+ curl -s http://ipecho.net/plain ; echo 
+ exit
+fi
+
+if [ ! -z $WGET ]; then
+ wget -qO- http://ipecho.net/plain ; echo
+ exit
+fi
+
+if [ ! -z $FETCH ]; then
+  fetch http://ipecho.net/plain -qo - ; echo
+exit
+fi
+
+# looks like we only have base .. 
+if [ ! -z $NC ]; then
+ echo "GET /plain HTTP/1.1\r\nHost:ipecho.net\r\nConnection:close\r\n\r\n" |nc ipecho.net 80 | tail -n 1 |sed "s/%//g;"
+exit 
+fi
+
+echo "You don't even have basic stuff on your box dude - no can do"
